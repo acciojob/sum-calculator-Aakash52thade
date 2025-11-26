@@ -3,46 +3,42 @@ import React, { useEffect, useState } from "react";
 const SumCalculator = () => {
   const [numbers, setNumbers] = useState([]);
   const [sum, setSum] = useState(0);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(0);
 
-  // Runs on every input change (typing or arrow key)
   const handleChange = (e) => {
-    const val = e.target.value;
-
-    setInputValue(val);
-
-    const num = parseInt(val);
-
+    const value = e.target.value;
+    setInputValue(value);
+    
+    const num = parseInt(value);
+    
     if (!isNaN(num)) {
-      setNumbers((prev) => [...prev, num]); // add value to array
+      // Add the new number to our array (accumulate)
+      setNumbers(prev => [...prev, num]);
     }
   };
 
-  // async sum calculation
+  // Async sum calculation
   useEffect(() => {
-    const calculateSum = () => {
-      setTimeout(() => {
-        const total = numbers.reduce((acc, curr) => acc + curr, 0);
-        setSum(total);
-      }, 0);
-    };
+    const timer = setTimeout(() => {
+      const total = numbers.reduce((acc, curr) => acc + curr, 0);
+      setSum(total);
+    }, 0);
 
-    if (numbers.length > 0) calculateSum();
+    return () => clearTimeout(timer);
   }, [numbers]);
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>Sum Calculator</h2>
-
-      <input
-        type="number"
-        value={inputValue}
-        placeholder="Enter Number"
-        onChange={handleChange}    // typing updates
-        onKeyUp={handleChange}     // arrow up/down updates
+      <input 
+        type="number" 
+        value={inputValue} 
+        onChange={handleChange}
       />
-
       <h3>Total Sum: {sum}</h3>
+      {/* <div>
+        <p>All numbers: {numbers.join(' + ')}</p>
+      </div> */}
     </div>
   );
 };
